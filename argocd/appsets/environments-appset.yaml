@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+name: environments-appset
+namespace: argocd
+
+spec:
+generators:
+- list:
+elements:
+- env: dev
+- env: staging
+- env: prod
+
+template:
+metadata:
+name: '{{env}}-platform'
+
+```
+spec:
+  project: secure-platform-project
+
+  source:
+    repoURL: https://github.com/abani-rautray/secure-progressive-delivery-platform.git
+
+    targetRevision: HEAD
+
+    path: kubernetes/overlays/{{env}}
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: production
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+```

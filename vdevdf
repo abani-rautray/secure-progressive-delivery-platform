@@ -1,0 +1,45 @@
+.github/workflows/ci.yaml:31: new blank line at EOF.
+.github/workflows/deploy.yaml:29: new blank line at EOF.
+.github/workflows/docker-build.yaml:46: new blank line at EOF.
+.github/workflows/helm-lint.yaml:22: new blank line at EOF.
+.github/workflows/security-scan.yaml:30: trailing whitespace.
+[32m+[m[41m    [m
+.github/workflows/security-scan.yaml:31: trailing whitespace.
+[32m+[m[32m    - name: SonarQube Scan[m[41m [m
+.github/workflows/security-scan.yaml:32: trailing whitespace.
+[32m+[m[32m      uses: SonarSource/sonarqube-scan-action@v2[m[41m [m
+.github/workflows/security-scan.yaml:33: trailing whitespace.
+[32m+[m[32m      env:[m[41m [m
+.github/workflows/security-scan.yaml:34: trailing whitespace.
+[32m+[m[32m        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}[m[41m [m
+.github/workflows/security-scan.yaml:36: new blank line at EOF.
+.github/workflows/terraform-apply.yaml:27: new blank line at EOF.
+.github/workflows/terraform-plan.yaml:31: new blank line at EOF.
+Makefile:86: trailing whitespace.
+[32m+[m[32maws eks update-kubeconfig[m[41m [m
+Makefile:87: trailing whitespace.
+[32m+[m[32m--region $(AWS_REGION)[m[41m [m
+project.txt:1: trailing whitespace.
+[32m+[m[32m/* When developers push updates, my responsibility is to securely deploy them to[m[41m [m
+project.txt:2: trailing whitespace.
+[32m+[m[32m    the Kubernetes cluster using CI/CD pipelines with code scanning, automated rollback on failures,[m[41m [m
+terraform/environments/dev/main.tf:263: trailing whitespace.
+[32m+[m[32m# LOGGING[m[41m [m
+terraform/environments/dev/main.tf:280: trailing whitespace.
+[32m+[m[32m# EKS ADDONS[m[41m [m
+terraform/environments/dev/main.tf:320: trailing whitespace.
+[32m+[m[32m# READ ONLY AUDIT ROLE[m[41m [m
+terraform/environments/dev/main.tf:336: trailing whitespace.
+[32m+[m[32m# ALBC[m[41m [m
+terraform/environments/dev/main.tf:353: trailing whitespace.
+[32m+[m[32m# SHARED ALB[m[41m [m
+terraform/environments/dev/main.tf:369: trailing whitespace.
+[32m+[m[32m# INGRESS GROUPS[m[41m [m
+terraform/environments/dev/main.tf:386: trailing whitespace.
+[32m+[m[32m# KARPENTER SQS[m[41m [m
+terraform/environments/dev/main.tf:397: trailing whitespace.
+[32m+[m[32m# KARPENTER EVENTBRIDGE[m[41m [m
+terraform/environments/dev/main.tf:411: trailing whitespace.
+[32m+[m[32m# MONITORING[m[41m [m
+terraform/environments/dev/main.tf:432: new blank line at EOF.
+terraform/modules/eks/cluster/main.tf:149: new blank line at EOF.

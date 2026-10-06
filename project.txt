@@ -1,0 +1,386 @@
+/* When developers push updates, my responsibility is to securely deploy them to
+    the Kubernetes cluster using CI/CD pipelines with code scanning, automated rollback on failures,
+    and progressive delivery through controlled rollouts. */
+
+#############################################################################
+
+/*  TOOLS & TECHNOLOGIES USED
+Version Control
+    Git, GitHub
+Infrastructure as Code (IaC)
+    Terraform
+Cloud Platform- AWS
+    EKS, Karpenter, S3, ALBC, IAM, IRSA, OIDC, ECR
+Containerization
+    Docker
+CI Pipeline & Security Scanning
+    GitHub Actions, Gitleaks (Secret Detection), Checkov / tfsec (IaC Scanning),
+    SoarQube (SAST), Trivy / Dependabot (SCA), Trivy (Container/Image Scanning)
+CD, GitOps & Progressive Delivery
+    Argo CD, Argo Rollouts, OWASP ZAP (DAST)
+Kubernetes
+    Deployments, Services, Ingress, ConfigMaps, Secrets
+Monitoring & Logging
+    Prometheus, Grafana, Loki, Fluent Bit
+*/
+
+###################################################################################################
+
+/*
+# Secure Progressive Delivery Platform – Architecture Design
+
+## Terraform Layer (Infrastructure Provisioning)
+
+Terraform provisions and manages the complete AWS infrastructure.
+
+### AWS Infrastructure Components
+
+#### Networking
+
+* VPC
+* Public Subnets
+* Private Subnets
+* Internet Gateway
+* NAT Gateway
+* Route Tables
+* Security Groups
+
+#### Kubernetes Platform
+
+* Amazon EKS Cluster
+* Managed Node Groups / Karpenter
+
+#### Identity & Access
+
+* IAM Roles
+* IAM Policies
+* OIDC Provider
+* IRSA (IAM Roles for Service Accounts)
+
+#### Container Registry
+
+* Amazon ECR Repository
+
+#### Storage
+
+* Amazon S3 Bucket
+
+  * Loki log storage
+  * Backup storage
+  * Artifact storage
+
+---
+
+# GitOps Layer (Managed by Argo CD)
+
+Argo CD continuously syncs Kubernetes manifests from GitHub to the EKS cluster.
+
+## Argo CD Managed Components
+
+### Ingress & Traffic Management
+
+* AWS Load Balancer Controller (ALBC)
+
+  * Creates Application Load Balancer (ALB)
+  * Manages ingress routing
+
+### Logging Stack
+
+* Loki
+
+  * Centralized log aggregation
+  * Stores logs in S3
+
+* Fluent Bit
+
+  * Collects pod and node logs
+  * Ships logs to Loki
+
+### Progressive Delivery
+
+* Argo Rollouts
+
+  * Canary deployments
+  * Blue-Green deployments
+  * Automated rollback support
+
+### Application Deployments
+
+Applications deployed through GitOps:
+
+* Frontend application
+* Backend API
+* Database manifests (if required)
+
+---
+
+# CI/CD Flow
+
+## CI Pipeline – GitHub Actions
+
+When a developer pushes code:
+
+1. GitHub Actions pipeline starts
+2. Security scans execute:
+
+   * Gitleaks
+   * Checkov / tfsec
+   * SonarQube
+   * Trivy
+3. Docker image is built
+4. Image is pushed to Amazon ECR
+5. Kubernetes manifests / Helm values are updated with new image tag
+6. Changes are committed to GitOps repository
+
+---
+
+# CD Flow – Argo CD
+
+1. Argo CD detects Git changes
+2. Synchronizes manifests to EKS
+3. Argo Rollouts performs progressive deployment
+4. ALBC routes traffic
+5. Prometheus monitors rollout health
+6. Automatic rollback triggers if failures occur
+
+---
+
+# Monitoring & Observability
+
+## Monitoring
+
+* Prometheus collects metrics
+* Grafana visualizes dashboards
+
+## Logging
+
+* Fluent Bit collects logs
+* Loki stores logs
+* Grafana visualizes logs
+
+---
+
+# High-Level Deployment Flow
+
+Developer Push
+↓
+GitHub Actions CI
+↓
+Security Scanning
+↓
+Docker Build
+↓
+Push Image to ECR
+↓
+Update GitOps Repository
+↓
+Argo CD Sync
+↓
+Argo Rollouts Progressive Deployment
+↓
+ALBC Routes Traffic
+↓
+Prometheus + Grafana Monitoring
+↓
+Automatic Rollback if Failure Detected
+
+
+*/
+
+###########################################################################################
+
+/*
+
+secure-progressive-delivery-platform/
+│
+├── README.md
+├── .gitignore
+├── Makefile
+│
+├── terraform/
+│   │
+│   ├── environments/
+│   │   ├── dev/
+│   │   │   ├── main.tf
+│   │   │   ├── variables.tf
+│   │   │   ├── outputs.tf
+│   │   │   └── terraform.tfvars
+│   │   │
+│   │   ├── staging/
+│   │   └── prod/
+│   │
+│   ├── modules/
+│   │   │
+│   │   ├── networking/
+│   │   │   ├── vpc/
+│   │   │   ├── security-groups/
+│   │   │   └── endpoints/
+│   │   │
+│   │   ├── eks/
+│   │   │   ├── cluster/
+│   │   │   ├── nodegroups/
+│   │   │   ├── oidc/
+│   │   │   └── addons/
+│   │   │
+│   │   ├── iam/
+│   │   │   ├── irsa/
+│   │   │   ├── policies/
+│   │   │   ├── roles/
+|   |   |   |    ├── github-actions/
+|   |   |   |    ├── terraform-role/
+|   |   |   |    └── readonly-audit/
+│   │   │   └── karpenter-node-role/
+│   │   │
+│   │   ├── karpenter/
+│   │   │   ├── sqs/
+│   │   │   ├── eventbridge/
+│   │   │   └── interruption-handling/
+│   │   │
+│   │   ├── load-balancing/
+│   │   │   ├── albc/
+│   │   │   ├── shared-alb/
+│   │   │   └── ingress-groups/
+│   │   │
+│   │   ├── storage/
+│   │   │   ├── s3/
+│   │   │   └── ecr/
+│   │   │
+│   │   └── observability/
+│   │       ├── monitoring/
+│   │       └── logging/
+│   │
+│   └── backend/
+│       └── backend.tf
+│
+├── kubernetes/
+│   │
+│   ├── apps/
+│   │   ├── frontend/
+│   │   ├── backend/
+│   │   └── canary/
+│   │       ├── frontend-rollout/
+|   |       └── backend-rollout/
+│   ├── base/
+│   │   ├── namespace.yaml
+│   │   ├── configmap.yaml
+│   │   ├── secret.yaml
+│   │   └── serviceaccount.yaml
+│   │
+│   ├── networking/
+│   │   ├── ingress/
+│   │   │   ├── shared-alb-ingress.yaml
+│   │   │   └── internal-ingress.yaml
+│   │   │
+│   │   ├── services/
+│   │   │   ├── frontend-service.yaml
+│   │   │   ├── backend-service.yaml
+|   |   |   ├── frontend-stable-service.yaml
+|   |   |   ├── frontend-canary-service.yaml
+│   │   │   ├── backend-stable-service.yaml
+│   │   │   └── backend-canary-service.yaml
+│   │   │
+│   │   └── policies/
+│   │       ├── network-policy.yaml
+│   │       └── pod-security.yaml
+│   │
+│   ├── argo-rollouts/
+│   │   ├── rollout.yaml
+│   │   ├── analysis-template.yaml
+│   │   ├── experiments.yaml
+│   │   └── traffic-routing.yaml
+│   │
+│   └── overlays/
+│       ├── dev/
+|       |   ├── kustomization.yaml
+|       |   ├── replica-patch.yaml
+|       |   ├── image-patch.yaml
+|       |   └── ingress-patch.yaml
+│       ├── staging/
+|       |   ├── kustomization.yaml
+|       |   ├── replica-patch.yaml
+|       |   ├── image-patch.yaml
+|       |   └── ingress-patch.yaml
+│       └── prod/
+|           ├── kustomization.yaml
+|           ├── replica-patch.yaml
+|           ├── image-patch.yaml
+|           └── ingress-patch.yaml
+│
+├── helm/
+│   │
+│   ├── infrastructure/
+│   │   ├── albc/
+│   │   ├── karpenter/
+│   │   └── metrics-server/
+│   │
+│   ├── observability/
+│   │   ├── prometheus/
+│   │   ├── grafana/
+│   │   ├── loki/
+│   │   └── fluent-bit/
+│   │
+│   └── gitops/
+│       ├── argo-cd/
+│       └── argo-rollouts/
+│
+├── argocd/
+│   │
+│   ├── applications/
+│   │   ├── frontend-app.yaml
+│   │   ├── backend-app.yaml
+│   │   ├── observability-app.yaml
+│   │   └── platform-app.yaml
+│   │
+│   ├── projects/platform-project.yaml
+│   └── appsets/environments-appset.yaml
+│
+├── app/
+│   ├── src/
+│   ├── tests/
+│   ├── requirements.txt
+│   ├── Dockerfile
+│   └── .dockerignore
+│
+├── .github/
+│   └── workflows/
+│       ├── ci.yaml
+│       ├── docker-build.yaml
+│       ├── security-scan.yaml
+│       ├── terraform-plan.yaml
+│       ├── terraform-apply.yaml
+│       ├── helm-lint.yaml
+│       └── deploy.yaml
+│
+├── security/
+│   ├── trivy/
+│   ├── checkov/
+│   ├── gitleaks/
+│   ├── zap/
+│   ├── kube-bench/
+│   └── sonarqube/
+│
+├── monitoring/
+│   ├── dashboards/
+│   ├── alerts/
+│   ├── recording-rules/
+│   └── prometheus-rules/
+│
+├── scripts/
+│   ├── bootstrap.sh
+│   ├── install-tools.sh
+│   ├── rollback.sh
+│   ├── cleanup.sh
+│   └── destroy.sh
+│
+└── docs/
+    ├── architecture.md
+    ├── deployment-flow.md
+    ├── rollback-strategy.md
+    ├── security-model.md
+    ├── cost-optimization.md
+    ├── networking.md
+    ├── observability.md
+    └── troubleshooting.md
+
+
+*/

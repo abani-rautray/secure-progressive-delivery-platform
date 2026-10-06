@@ -1,0 +1,67 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+name: backend-rollout-advanced
+namespace: production
+
+spec:
+replicas: 3
+
+revisionHistoryLimit: 5
+
+strategy:
+canary:
+stableService: backend-stable-service
+
+```
+  canaryService: backend-canary-service
+
+  trafficRouting:
+    alb:
+      ingress: backend-ingress
+      servicePort: 80
+
+  analysis:
+    templates:
+      - templateName: success-rate-analysis
+
+  steps:
+    - setWeight: 5
+    - pause:
+        duration: 60s
+
+    - analysis:
+        templates:
+          - templateName: success-rate-analysis
+
+    - setWeight: 25
+    - pause:
+        duration: 120s
+
+    - setWeight: 50
+    - pause:
+        duration: 180s
+
+    - setWeight: 100
+```
+
+selector:
+matchLabels:
+app: backend
+
+template:
+metadata:
+labels:
+app: backend
+version: canary
+
+```
+spec:
+  containers:
+    - name: backend
+
+      image: backend-image:latest
+
+      ports:
+        - containerPort: 8080
+```

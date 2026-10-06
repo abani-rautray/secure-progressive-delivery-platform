@@ -1,0 +1,20 @@
+settings:
+clusterName: secure-platform-eks
+
+interruptionQueue: secure-platform-karpenter-interruptions
+
+serviceAccount:
+create: false
+name: karpenter
+
+controller:
+resources:
+requests:
+cpu: 500m
+memory: 512Mi
+
+```
+limits:
+  cpu: "1"
+  memory: 1Gi
+```

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+name: frontend
+
+spec:
+template:
+spec:
+containers:
+- name: frontend
+
+```
+      image: staging-frontend-image:v1
+```
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+name: backend
+
+spec:
+template:
+spec:
+containers:
+- name: backend
+
+```
+      image: staging-backend-image:v1
+```

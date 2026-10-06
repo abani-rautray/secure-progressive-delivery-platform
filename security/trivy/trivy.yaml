@@ -1,0 +1,21 @@
+severity:
+
+* HIGH
+* CRITICAL
+
+ignore-unfixed: true
+
+format: table
+
+exit-code: 1
+
+scanners:
+
+* vuln
+* misconfig
+* secret
+
+scan:
+skip-dirs:
+- .git
+- node_modules

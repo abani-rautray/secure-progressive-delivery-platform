@@ -1,0 +1,14 @@
+**pycache**/
+*.pyc
+*.pyo
+*.pyd
+
+.env
+.git
+
+tests/
+
+venv/
+.venv/
+
+pytest_cache/

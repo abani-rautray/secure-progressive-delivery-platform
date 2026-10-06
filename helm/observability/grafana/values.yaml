@@ -1,0 +1,76 @@
+replicas: 2
+
+adminUser: admin
+
+adminPassword: change-me
+
+service:
+type: ClusterIP
+port: 80
+
+persistence:
+enabled: true
+
+accessModes:
+- ReadWriteOnce
+
+size: 10Gi
+
+resources:
+requests:
+cpu: 250m
+memory: 512Mi
+
+limits:
+cpu: 500m
+memory: 1Gi
+
+datasources:
+datasources.yaml:
+apiVersion: 1
+
+```
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+
+    url: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+
+    isDefault: true
+
+  - name: Loki
+    type: loki
+    access: proxy
+
+    url: http://loki-gateway.logging.svc.cluster.local
+```
+
+dashboardProviders:
+dashboardproviders.yaml:
+apiVersion: 1
+
+```
+providers:
+  - name: default
+
+    orgId: 1
+
+    folder: ""
+
+    type: file
+
+    disableDeletion: false
+
+    editable: true
+
+    options:
+      path: /var/lib/grafana/dashboards/default
+```
+
+sidecar:
+dashboards:
+enabled: true
+
+datasources:
+enabled: true

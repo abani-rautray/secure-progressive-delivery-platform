@@ -1,0 +1,22 @@
+serviceAccount:
+create: true
+
+name: fluent-bit
+
+config:
+service: |
+[SERVICE]
+Flush         1
+Log_Level     info
+
+inputs: |
+[INPUT]
+Name tail
+Path /var/log/containers/*.log
+
+outputs: |
+[OUTPUT]
+Name loki
+Match *
+Host loki-gateway
+Port 80

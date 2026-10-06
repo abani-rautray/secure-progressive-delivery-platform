@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+name: traffic-routing-example
+namespace: production
+
+spec:
+strategy:
+canary:
+trafficRouting:
+alb:
+ingress: backend-ingress
+
+```
+      servicePort: 80
+
+      rootService: backend-stable-service
+
+  stableService: backend-stable-service
+
+  canaryService: backend-canary-service
+```

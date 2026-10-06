@@ -1,0 +1,52 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: production
+
+resources:
+
+* ../../base
+
+* ../../networking/services/frontend-service.yaml
+
+* ../../networking/services/backend-service.yaml
+
+* ../../networking/services/frontend-stable-service.yaml
+
+* ../../networking/services/frontend-canary-service.yaml
+
+* ../../networking/services/backend-stable-service.yaml
+
+* ../../networking/services/backend-canary-service.yaml
+
+* ../../networking/ingress/shared-alb-ingress.yaml
+
+* ../../networking/ingress/internal-ingress.yaml
+
+* ../../networking/policies/network-policy.yaml
+
+* ../../networking/policies/pod-security.yaml
+
+* ../../apps/frontend/deployment.yaml
+
+* ../../apps/frontend/hpa.yaml
+
+* ../../apps/backend/deployment.yaml
+
+* ../../apps/backend/hpa.yaml
+
+* ../../apps/canary/frontend-rollout/rollout.yaml
+
+* ../../apps/canary/backend-rollout/rollout.yaml
+
+* ../../argo-rollouts/analysis-template.yaml
+
+* ../../argo-rollouts/experiments.yaml
+
+* ../../argo-rollouts/traffic-routing.yaml
+
+patchesStrategicMerge:
+
+* replica-patch.yaml
+* image-patch.yaml
+* ingress-patch.yaml

@@ -1,0 +1,45 @@
+name: Docker Build And Push
+
+on:
+  push:
+  branches: [ main  ]
+
+env:
+AWS_REGION: ap-south-1
+ECR_REPOSITORY: secure-platform-app
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_GITHUB_ROLE_ARN }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login To ECR
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Build Docker Image
+      run: |
+        docker build -t $ECR_REPOSITORY:latest ./app
+
+    - name: Tag Docker Image
+      run: |
+        docker tag $ECR_REPOSITORY:latest \
+        ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/$ECR_REPOSITORY:latest
+
+    - name: Push Docker Image
+      run: |
+        docker push \
+        ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/$ECR_REPOSITORY:latest

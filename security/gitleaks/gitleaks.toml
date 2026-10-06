@@ -1,0 +1,11 @@
+title = "Secure Platform Gitleaks Config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Allow example secrets"
+
+paths = [
+'''kubernetes/base/secret.yaml'''
+]

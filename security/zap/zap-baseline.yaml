@@ -1,0 +1,12 @@
+target:
+
+* https://frontend.example.com
+* https://api.example.com
+
+rules:
+
+* id: 10021
+  threshold: Medium
+
+* id: 10054
+  threshold: Medium

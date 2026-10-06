@@ -1,0 +1,12 @@
+loki:
+auth_enabled: false
+
+storage:
+type: s3
+
+singleBinary:
+replicas: 1
+
+monitoring:
+serviceMonitor:
+enabled: true

@@ -1,0 +1,22 @@
+clusterName: secure-platform-eks
+
+region: ap-south-1
+
+replicaCount: 2
+
+serviceAccount:
+create: false
+name: aws-load-balancer-controller
+
+enableShield: false
+enableWaf: false
+enableWafv2: false
+
+resources:
+requests:
+cpu: 200m
+memory: 256Mi
+
+limits:
+cpu: 500m
+memory: 512Mi

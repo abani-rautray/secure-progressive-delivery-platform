@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+name: internal-ingress
+namespace: production
+
+annotations:
+kubernetes.io/ingress.class: alb
+
+```
+alb.ingress.kubernetes.io/scheme: internal
+
+alb.ingress.kubernetes.io/target-type: ip
+
+alb.ingress.kubernetes.io/group.name: internal-alb-group
+
+alb.ingress.kubernetes.io/healthcheck-path: /health
+
+alb.ingress.kubernetes.io/backend-protocol: HTTP
+```
+
+spec:
+ingressClassName: alb
+
+rules:
+- host: internal-api.example.com
+
+```
+  http:
+    paths:
+      - path: /
+        pathType: Prefix
+
+        backend:
+          service:
+            name: backend-service
+
+            port:
+              number: 80
+```

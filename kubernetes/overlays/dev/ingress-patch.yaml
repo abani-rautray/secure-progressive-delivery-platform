@@ -1,0 +1,12 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+name: shared-alb-ingress
+
+spec:
+rules:
+- host: dev-frontend.example.com
+
+```
+- host: dev-api.example.com
+```

@@ -1,0 +1,43 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+name: platform-prometheus-rules
+namespace: monitoring
+
+spec:
+groups:
+- name: platform.rules
+
+```
+  rules:
+    - alert: PodCrashLooping
+
+      expr: |
+        kube_pod_container_status_restarts_total > 5
+
+      for: 10m
+
+      labels:
+        severity: warning
+
+      annotations:
+        summary: Pod restarting frequently
+        description: Pod restart count exceeded threshold
+
+    - alert: NodeNotReady
+
+      expr: |
+        kube_node_status_condition{
+          condition="Ready",
+          status="true"
+        } == 0
+
+      for: 5m
+
+      labels:
+        severity: critical
+
+      annotations:
+        summary: Node not ready
+        description: Kubernetes node became unavailable
+```

@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+name: secure-platform-project
+namespace: argocd
+
+spec:
+description: Secure Progressive Delivery Platform
+
+sourceRepos:
+- '*'
+
+destinations:
+- namespace: production
+server: https://kubernetes.default.svc
+
+```
+- namespace: monitoring
+  server: https://kubernetes.default.svc
+
+- namespace: logging
+  server: https://kubernetes.default.svc
+
+- namespace: argocd
+  server: https://kubernetes.default.svc
+```
+
+clusterResourceWhitelist:
+- group: '*'
+kind: '*'
+
+namespaceResourceWhitelist:
+- group: '*'
+kind: '*'
+
+orphanedResources:
+warn: true
+
+roles:
+- name: developers
+
+```
+  description: Developer access to platform apps
+
+  policies:
+    - p, proj:secure-platform-project:developers, applications, get, secure-platform-project/*, allow
+    - p, proj:secure-platform-project:developers, applications, sync, secure-platform-project/*, allow
+
+  groups:
+    - developers
+```

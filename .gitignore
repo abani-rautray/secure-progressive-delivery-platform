@@ -1,0 +1,174 @@
+# =========================
+
+# Terraform
+
+# =========================
+
+*.tfstate
+*.tfstate.*
+*.tfvars
+!terraform.tfvars.example
+
+.terraform/
+# .terraform.lock.hcl
+
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform plan files
+
+*.plan
+
+# =========================
+
+# Kubernetes
+
+# =========================
+
+*.kubeconfig
+kubeconfig
+kubeconfig.yaml
+
+# =========================
+
+# Helm
+
+# =========================
+
+*.tgz
+
+# =========================
+
+# Docker
+
+# =========================
+
+.docker/
+
+# =========================
+
+# Python
+
+# =========================
+
+**pycache**/
+*.pyc
+*.pyo
+*.pyd
+
+venv/
+.env/
+.venv/
+
+pip-log.txt
+pip-delete-this-directory.txt
+
+# =========================
+
+# IDE / Editors
+
+# =========================
+
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+
+# Operating System Files
+
+# =========================
+
+.DS_Store
+Thumbs.db
+
+# =========================
+
+# Logs
+
+# =========================
+
+logs/
+*.log
+
+# =========================
+
+# Security / Secrets
+
+# =========================
+
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+*.secret
+secrets.yaml
+
+# AWS credentials
+
+.aws/
+
+# =========================
+
+# Node / Frontend
+
+# =========================
+
+node_modules/
+
+# =========================
+
+# Coverage / Reports
+
+# =========================
+
+coverage/
+htmlcov/
+reports/
+
+# =========================
+
+# SonarQube
+
+# =========================
+
+.scannerwork/
+
+# =========================
+
+# Trivy
+
+# =========================
+
+.trivycache/
+
+# =========================
+
+# Test Artifacts
+
+# =========================
+
+test-results/
+pytest_cache/
+
+# =========================
+
+# ArgoCD / Generated Files
+
+# =========================
+
+*.generated.yaml
+
+# =========================
+
+# Backup Files
+
+# =========================
+
+*.bak
+*.backup

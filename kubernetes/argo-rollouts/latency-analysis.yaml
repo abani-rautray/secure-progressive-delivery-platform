@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: latency-analysis
+  namespace: prod
+spec:
+  metrics:
+    - name: request-latency-p95
+      interval: 30s
+      count: 5
+      failureLimit: 2
+
+      provider:
+        prometheus:
+          address: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+
+          query: |
+            histogram_quantile(
+              0.95,
+              sum(
+                rate(
+                  http_request_duration_seconds_bucket{
+                    namespace="prod",
+                    app="backend"
+                  }[2m]
+                )
+              ) by (le)
+            )
+
+      successCondition: result[0] < 0.5

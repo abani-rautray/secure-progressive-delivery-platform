@@ -1,0 +1,14 @@
+framework:
+
+* terraform
+* kubernetes
+
+download-external-modules: true
+
+quiet: false
+
+compact: true
+
+skip-check:
+
+* CKV_AWS_79

@@ -1,0 +1,11 @@
+controller:
+replicas: 2
+
+dashboard:
+enabled: true
+
+metrics:
+enabled: true
+
+notifications:
+enabled: false

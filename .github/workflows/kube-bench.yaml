@@ -1,0 +1,69 @@
+name: Kubernetes CIS Benchmark Scan
+
+on:
+workflow_dispatch:
+
+jobs:
+kube-bench:
+runs-on: ubuntu-latest
+
+```
+permissions:
+  id-token: write
+  contents: read
+
+steps:
+  - name: Checkout
+    uses: actions/checkout@v4
+
+  # ==========================================
+  # Configure AWS Credentials
+  # ==========================================
+
+  - name: Configure AWS Credentials
+    uses: aws-actions/configure-aws-credentials@v4
+    with:
+      role-to-assume: ${{ secrets.AWS_GITHUB_ROLE_ARN }}
+
+      aws-region: ap-south-1
+
+  # ==========================================
+  # Update kubeconfig
+  # ==========================================
+
+  - name: Configure kubectl
+    run: |
+      aws eks update-kubeconfig \
+      --name secure-platform-eks \
+      --region ap-south-1
+
+  # ==========================================
+  # Run kube-bench Job
+  # ==========================================
+
+  - name: Run kube-bench
+    run: |
+      kubectl apply -f security/kube-bench/job.yaml
+
+  # ==========================================
+  # Wait For Completion
+  # ==========================================
+
+  - name: Wait For Job
+    run: |
+      kubectl wait \
+      --for=condition=complete \
+      job/kube-bench \
+      -n kube-system \
+      --timeout=300s
+
+  # ==========================================
+  # Fetch Logs
+  # ==========================================
+
+  - name: Get kube-bench Logs
+    run: |
+      kubectl logs \
+      job/kube-bench \
+      -n kube-system
+```

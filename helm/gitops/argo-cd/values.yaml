@@ -1,0 +1,12 @@
+server:
+replicas: 2
+
+configs:
+params:
+server.insecure: true
+
+controller:
+replicas: 1
+
+repoServer:
+replicas: 2

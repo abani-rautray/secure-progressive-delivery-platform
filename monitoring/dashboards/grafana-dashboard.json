@@ -1,0 +1,26 @@
+{
+"title": "Platform Overview",
+"timezone": "browser",
+"panels": [
+{
+"title": "CPU Usage",
+"type": "graph",
+"targets": [
+{
+"expr": "sum(rate(container_cpu_usage_seconds_total[5m]))"
+}
+]
+},
+{
+"title": "Memory Usage",
+"type": "graph",
+"targets": [
+{
+"expr": "sum(container_memory_usage_bytes)"
+}
+]
+}
+],
+"schemaVersion": 38,
+"version": 1
+}

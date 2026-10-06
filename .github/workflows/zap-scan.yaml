@@ -1,0 +1,38 @@
+name: OWASP ZAP Security Scan
+
+on:
+workflow_dispatch:
+
+jobs:
+zap-scan:
+runs-on: ubuntu-latest
+
+```
+steps:
+  - name: Checkout
+    uses: actions/checkout@v4
+
+  # ==========================================
+  # Run OWASP ZAP Baseline Scan
+  # ==========================================
+
+  - name: ZAP Baseline Scan
+    uses: zaproxy/action-baseline@v0.12.0
+    with:
+      target: https://staging-api.example.com
+
+      rules_file_name: security/zap/zap-baseline.yaml
+
+      cmd_options: '-a'
+
+  # ==========================================
+  # Upload ZAP Report
+  # ==========================================
+
+  - name: Upload ZAP Report
+    uses: actions/upload-artifact@v4
+    with:
+      name: zap-report
+
+      path: report_html.html
+```

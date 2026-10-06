@@ -1,0 +1,124 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+
+metadata:
+  name: backend-rollout
+  namespace: production
+
+  labels:
+    app: backend
+
+spec:
+  replicas: 3
+
+  revisionHistoryLimit: 5
+
+  selector:
+    matchLabels:
+      app: backend
+
+  strategy:
+    canary:
+
+      stableService: backend-stable-service
+      canaryService: backend-canary-service
+
+      trafficRouting:
+        alb:
+          ingress: backend-ingress
+          servicePort: 80
+
+      steps:
+
+        - setWeight: 10
+
+        - pause:
+            duration: 60s
+
+        - analysis:
+            templates:
+              - templateName: success-rate-analysis
+              - templateName: latency-analysis
+
+        - setWeight: 25
+
+        - pause:
+            duration: 120s
+
+        - analysis:
+            templates:
+              - templateName: success-rate-analysis
+              - templateName: latency-analysis
+
+        - setWeight: 50
+
+        - pause:
+            duration: 180s
+
+        - analysis:
+            templates:
+              - templateName: success-rate-analysis
+              - templateName: latency-analysis
+
+        - setWeight: 75
+
+        - pause:
+            duration: 300s
+
+        - analysis:
+            templates:
+              - templateName: success-rate-analysis
+              - templateName: latency-analysis
+
+        - setWeight: 100
+
+  template:
+    metadata:
+      labels:
+        app: backend
+        version: canary
+
+    spec:
+      serviceAccountName: app-service-account
+
+      containers:
+        - name: backend
+
+          image: backend-image:latest
+
+          imagePullPolicy: Always
+
+          ports:
+            - containerPort: 8080
+
+          envFrom:
+            - configMapRef:
+                name: platform-config
+
+            - secretRef:
+                name: platform-secret
+
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+
+            initialDelaySeconds: 15
+            periodSeconds: 20

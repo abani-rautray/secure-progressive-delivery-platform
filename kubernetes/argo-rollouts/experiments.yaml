@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Experiment
+metadata:
+name: backend-experiment
+namespace: production
+
+spec:
+duration: 10m
+
+templates:
+- name: baseline
+
+```
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: backend
+      version: stable
+
+  template:
+    metadata:
+      labels:
+        app: backend
+        version: stable
+
+    spec:
+      containers:
+        - name: backend
+          image: backend-image:stable
+
+- name: canary
+
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: backend
+      version: canary
+
+  template:
+    metadata:
+      labels:
+        app: backend
+        version: canary
+
+    spec:
+      containers:
+        - name: backend
+          image: backend-image:canary
+```

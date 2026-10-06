@@ -1,0 +1,30 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+name: rollout-failure-alert
+namespace: monitoring
+
+spec:
+groups:
+- name: rollout-alerts
+
+```
+  rules:
+    - alert: CanaryFailureRate
+
+      expr: |
+        (
+          sum(rate(http_requests_total{status=~"5.."}[5m]))
+          /
+          sum(rate(http_requests_total[5m]))
+        ) > 0.05
+
+      for: 2m
+
+      labels:
+        severity: critical
+
+      annotations:
+        summary: Canary rollout failure detected
+        description: Error rate exceeded 5%
+```

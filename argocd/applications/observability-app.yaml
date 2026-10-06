@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+name: observability-app
+namespace: argocd
+
+spec:
+project: secure-platform-project
+
+source:
+repoURL: https://github.com/abani-rautray/secure-progressive-delivery-platform.git
+
+```
+targetRevision: HEAD
+
+path: helm/observability
+```
+
+destination:
+server: https://kubernetes.default.svc
+namespace: monitoring
+
+syncPolicy:
+automated:
+prune: true
+selfHeal: true
